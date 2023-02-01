@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createAuthWithEmailAndPassword, createUserDoucumentFromAuth } from "../../utils/firebase/firebase.utils";
 
 const defaultFormFields = {
     'displayName': '',
@@ -8,19 +9,35 @@ const defaultFormFields = {
 }
 
 const SignUpForm = () => {
-    
+
     const [formFields, setFormFields] = useState(defaultFormFields)
     const { displayName, email, password, confirmPassword } = formFields;
-    console.log(formFields)
+    // console.log(formFields)
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (password !== confirmPassword) alert('Password mismatch')
+
+        try {
+            let { user } = await createAuthWithEmailAndPassword(email, password);
+            // console.log(response)
+            user = {...user, displayName} // because in this case user object will contain displayName as null assigining the displayName value into the user object.
+            await createUserDoucumentFromAuth(user)
+        } catch (error) {
+            if(error.code === 'auth/email-already-in-use') alert('Email already exist');
+            else console.log(error)
+        }
+    }
 
     const handleChage = (event) => {
         const { name, value } = event.target;
-        setFormFields({...formFields, [name]: value})
+        setFormFields({ ...formFields, [name]: value })
     }
     return (
         <div>
             <h1>Sign up with your email and password</h1>
-            <form onSubmit={() => { }}>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="">Display Name</label>
                 <input type="text" required value={displayName} onChange={handleChage} name='displayName' />
 
