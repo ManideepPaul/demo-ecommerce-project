@@ -20,6 +20,10 @@ const SignUpForm = () => {
   const { displayName, email, password, confirmPassword } = formFields;
   // console.log(formFields)
 
+  const resetFormFields = () => {
+    setFormFields(defaultFormFields);
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -30,6 +34,7 @@ const SignUpForm = () => {
       // console.log(response)
       user = { ...user, displayName }; // because in this case user object will contain displayName as null assigining the displayName value into the user object.
       await createUserDoucumentFromAuth(user);
+      resetFormFields()
     } catch (error) {
       if (error.code === "auth/email-already-in-use")
         alert("Email already exist");
