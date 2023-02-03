@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   createAuthWithEmailAndPassword,
   createUserDoucumentFromAuth,
@@ -6,7 +6,10 @@ import {
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-import './sign-up-form.styles.scss'
+
+import { UserContext } from "../../contexts/user.context";
+
+import "./sign-up-form.styles.scss";
 
 const defaultFormFields = {
   displayName: "",
@@ -18,11 +21,14 @@ const defaultFormFields = {
 const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
-  // console.log(formFields)
+
+  const { setCurrentUser } = useContext(UserContext);
+
+//   console.log("hit");
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
-  }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,10 +37,11 @@ const SignUpForm = () => {
 
     try {
       let { user } = await createAuthWithEmailAndPassword(email, password);
-      // console.log(response)
       user = { ...user, displayName }; // because in this case user object will contain displayName as null assigining the displayName value into the user object.
+      setCurrentUser(user)
+
       await createUserDoucumentFromAuth(user);
-      resetFormFields()
+      resetFormFields();
     } catch (error) {
       if (error.code === "auth/email-already-in-use")
         alert("Email already exist");
@@ -48,7 +55,7 @@ const SignUpForm = () => {
   };
   return (
     <div className="sign-up-container">
-        <h2>Don't have an account?</h2>
+      <h2>Don't have an account?</h2>
       <span>Sign up with your email and password</span>
       <form onSubmit={handleSubmit}>
         <FormInput
@@ -86,7 +93,9 @@ const SignUpForm = () => {
           onChange={handleChage}
           name="confirmPassword"
         />
-        <Button buttonType='inverted' type="submit">Sign Up</Button>
+        <Button buttonType="inverted" type="submit">
+          Sign Up
+        </Button>
       </form>
     </div>
   );
