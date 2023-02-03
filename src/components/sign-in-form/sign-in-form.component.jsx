@@ -50,7 +50,7 @@ const SignInForm = () => {
   };
   return (
     <div className="sign-up-container">
-      <h2>Already have an account</h2>
+      <h2>Already have an account?</h2>
       <span>Sign up with your email and password</span>
       <form onSubmit={handleSubmit}>
         <FormInput
@@ -74,7 +74,7 @@ const SignInForm = () => {
           <Button buttonType="inverted" type="submit">
             SIGN IN
           </Button>
-          <Button buttonType="google" onClick={signInWithGoogle}>
+          <Button type='button' buttonType="google" onClick={signInWithGoogle}> {/* We need to specify the type='button' because by default button inside form is submit type */}
             GOOGLE SIGN IN
           </Button>
         </div>
