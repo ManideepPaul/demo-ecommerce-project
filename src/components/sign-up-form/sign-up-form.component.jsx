@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   createAuthWithEmailAndPassword,
   createUserDoucumentFromAuth,
@@ -6,8 +6,6 @@ import {
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-
-import { UserContext } from "../../contexts/user.context";
 
 import "./sign-up-form.styles.scss";
 
@@ -22,10 +20,6 @@ const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
-  const { setCurrentUser } = useContext(UserContext);
-
-//   console.log("hit");
-
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
@@ -38,7 +32,6 @@ const SignUpForm = () => {
     try {
       let { user } = await createAuthWithEmailAndPassword(email, password);
       user = { ...user, displayName }; // because in this case user object will contain displayName as null assigining the displayName value into the user object.
-      setCurrentUser(user)
 
       await createUserDoucumentFromAuth(user);
       resetFormFields();
